@@ -22,8 +22,22 @@ interface Action {
 const generateDeck = (): Card[] => {
   const deck: Card[] = [];
   const suits = ["hearts", "diamonds", "clubs", "spades"] as const;
-  const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] as const;
-  
+  const ranks = [
+    "A",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
+  ] as const;
+
   for (let i = 0; i < 52; i++) {
     const suit = suits[Math.floor(i / 13)] as Suit;
     const rank = ranks[i % 13] as Rank;

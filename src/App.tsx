@@ -1,7 +1,5 @@
-import { type JSX } from "react";
-import "./App.css";
-import GamePage from "./pages/GamePage";
+import AppRouter from "./router/AppRouter";
 
-export default function App(): JSX.Element {
-  return <GamePage />;
+export default function App() {
+  return <AppRouter />;
 }
