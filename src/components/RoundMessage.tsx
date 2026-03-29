@@ -1,8 +1,12 @@
+import React from "react";
+
 interface RoundMessageProps {
   message: string;
 }
 
-export default function RoundMessage({ message }: RoundMessageProps): JSX.Element {
+export default function RoundMessage({
+  message,
+}: RoundMessageProps): React.JSX.Element {
   return (
     <div
       style={{

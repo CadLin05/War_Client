@@ -8,7 +8,7 @@ interface CardDisplayProps {
 export default function CardDisplay({
   title,
   card,
-}: CardDisplayProps): JSX.Element {
+}: CardDisplayProps): React.JSX.Element {
   return (
     <div
       style={{

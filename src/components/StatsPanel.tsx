@@ -1,3 +1,5 @@
+import React from "react";
+
 interface StatsPanelProps {
   roundCount: number;
   playerDeckCount: number;
@@ -8,7 +10,7 @@ export default function StatsPanel({
   roundCount,
   playerDeckCount,
   computerDeckCount,
-}: StatsPanelProps): JSX.Element {
+}: StatsPanelProps): React.JSX.Element {
   return (
     <div
       style={{

@@ -1,6 +1,60 @@
-import type { Card } from "../types/card";
+import type { Card, Rank, Suit } from "../types/card";
 import type { GameState } from "../types/game";
-import { createDeck, shuffleDeck, splitDeck } from "./Deck.ts";
+
+const suits: Suit[] = ["Hearts", "Diamonds", "Clubs", "Spades"];
+const ranks: Rank[] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+
+const rankValues: Record<Rank, number> = {
+  "2": 2,
+  "3": 3,
+  "4": 4,
+  "5": 5,
+  "6": 6,
+  "7": 7,
+  "8": 8,
+  "9": 9,
+  "10": 10,
+  J: 11,
+  Q: 12,
+  K: 13,
+  A: 14,
+};
+
+function createDeck(): Card[] {
+  const deck: Card[] = [];
+
+  for (const suit of suits) {
+    for (const rank of ranks) {
+      deck.push({
+        suit,
+        rank,
+        value: rankValues[rank],
+      });
+    }
+  }
+
+  return deck;
+}
+
+function shuffleDeck(deck: Card[]): Card[] {
+  const shuffledDeck = [...deck];
+
+  for (let i = shuffledDeck.length - 1; i > 0; i -= 1) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    [shuffledDeck[i], shuffledDeck[randomIndex]] = [shuffledDeck[randomIndex], shuffledDeck[i]];
+  }
+
+  return shuffledDeck;
+}
+
+function splitDeck(deck: Card[]): { playerDeck: Card[]; computerDeck: Card[] } {
+  const middle = deck.length / 2;
+
+  return {
+    playerDeck: deck.slice(0, middle),
+    computerDeck: deck.slice(middle),
+  };
+}
 
 function drawTopCard(deck: Card[]): { drawnCard: Card | null; remainingDeck: Card[] } {
   if (deck.length === 0) {
@@ -11,27 +65,10 @@ function drawTopCard(deck: Card[]): { drawnCard: Card | null; remainingDeck: Car
   }
 
   const [drawnCard, ...remainingDeck] = deck;
+
   return {
     drawnCard,
     remainingDeck,
-  };
-}
-
-export function startNewGame(): GameState {
-  const newDeck = createDeck();
-  const shuffledDeck = shuffleDeck(newDeck);
-  const { playerDeck, computerDeck } = splitDeck(shuffledDeck);
-
-  return {
-    playerDeck,
-    computerDeck,
-    playerCard: null,
-    computerCard: null,
-    warPile: [],
-    roundCount: 0,
-    roundMessage: "Game started. Flip a card!",
-    gameOver: false,
-    winner: null,
   };
 }
 
@@ -42,12 +79,11 @@ function resolveWar(
 ): {
   playerDeck: Card[];
   computerDeck: Card[];
-  warPile: Card[];
+  playerCard: Card | null;
+  computerCard: Card | null;
   roundMessage: string;
   gameOver: boolean;
   winner: "Player" | "Computer" | null;
-  playerCard: Card | null;
-  computerCard: Card | null;
 } {
   let updatedPlayerDeck = [...playerDeck];
   let updatedComputerDeck = [...computerDeck];
@@ -58,12 +94,11 @@ function resolveWar(
       return {
         playerDeck: [],
         computerDeck: [...updatedComputerDeck, ...updatedWarPile, ...updatedPlayerDeck],
-        warPile: updatedWarPile,
+        playerCard: null,
+        computerCard: null,
         roundMessage: "Player does not have enough cards for war. Computer wins the game!",
         gameOver: true,
         winner: "Computer",
-        playerCard: null,
-        computerCard: null,
       };
     }
 
@@ -71,12 +106,11 @@ function resolveWar(
       return {
         playerDeck: [...updatedPlayerDeck, ...updatedWarPile, ...updatedComputerDeck],
         computerDeck: [],
-        warPile: updatedWarPile,
+        playerCard: null,
+        computerCard: null,
         roundMessage: "Computer does not have enough cards for war. Player wins the game!",
         gameOver: true,
         winner: "Player",
-        playerCard: null,
-        computerCard: null,
       };
     }
 
@@ -90,18 +124,23 @@ function resolveWar(
     updatedPlayerDeck = updatedPlayerDeck.slice(1);
     updatedComputerDeck = updatedComputerDeck.slice(1);
 
-    updatedWarPile.push(playerFaceDown, computerFaceDown, playerFaceUp, computerFaceUp);
+    updatedWarPile = [
+      ...updatedWarPile,
+      playerFaceDown,
+      computerFaceDown,
+      playerFaceUp,
+      computerFaceUp,
+    ];
 
     if (playerFaceUp.value > computerFaceUp.value) {
       return {
         playerDeck: [...updatedPlayerDeck, ...updatedWarPile],
         computerDeck: updatedComputerDeck,
-        warPile: [],
-        roundMessage: `WAR! Player wins the war with ${playerFaceUp.rank} over ${computerFaceUp.rank}.`,
-        gameOver: false,
-        winner: null,
         playerCard: playerFaceUp,
         computerCard: computerFaceUp,
+        roundMessage: `WAR! Player wins with ${playerFaceUp.rank} over ${computerFaceUp.rank}.`,
+        gameOver: false,
+        winner: null,
       };
     }
 
@@ -109,49 +148,64 @@ function resolveWar(
       return {
         playerDeck: updatedPlayerDeck,
         computerDeck: [...updatedComputerDeck, ...updatedWarPile],
-        warPile: [],
-        roundMessage: `WAR! Computer wins the war with ${computerFaceUp.rank} over ${playerFaceUp.rank}.`,
-        gameOver: false,
-        winner: null,
         playerCard: playerFaceUp,
         computerCard: computerFaceUp,
+        roundMessage: `WAR! Computer wins with ${computerFaceUp.rank} over ${playerFaceUp.rank}.`,
+        gameOver: false,
+        winner: null,
       };
     }
   }
 }
 
-export function playRound(currentState: GameState): GameState {
-  if (currentState.gameOver) {
-    return currentState;
+export function startNewGame(): GameState {
+  const freshDeck = shuffleDeck(createDeck());
+  const { playerDeck, computerDeck } = splitDeck(freshDeck);
+
+  return {
+    playerDeck,
+    computerDeck,
+    playerCard: null,
+    computerCard: null,
+    roundCount: 0,
+    roundMessage: "Game started. Flip a card!",
+    gameOver: false,
+    winner: null,
+  };
+}
+
+export function playRound(state: GameState): GameState {
+  if (state.gameOver) {
+    return state;
   }
 
-  if (currentState.playerDeck.length === 0) {
+  if (state.playerDeck.length === 0) {
     return {
-      ...currentState,
+      ...state,
       gameOver: true,
       winner: "Computer",
       roundMessage: "Computer wins the game!",
     };
   }
 
-  if (currentState.computerDeck.length === 0) {
+  if (state.computerDeck.length === 0) {
     return {
-      ...currentState,
+      ...state,
       gameOver: true,
       winner: "Player",
       roundMessage: "Player wins the game!",
     };
   }
 
-  const playerDraw = drawTopCard(currentState.playerDeck);
-  const computerDraw = drawTopCard(currentState.computerDeck);
+  const playerDraw = drawTopCard(state.playerDeck);
+  const computerDraw = drawTopCard(state.computerDeck);
 
   const playerCard = playerDraw.drawnCard;
   const computerCard = computerDraw.drawnCard;
 
   if (playerCard === null) {
     return {
-      ...currentState,
+      ...state,
       gameOver: true,
       winner: "Computer",
       roundMessage: "Computer wins the game!",
@@ -160,26 +214,23 @@ export function playRound(currentState: GameState): GameState {
 
   if (computerCard === null) {
     return {
-      ...currentState,
+      ...state,
       gameOver: true,
       winner: "Player",
       roundMessage: "Player wins the game!",
     };
   }
 
-  const updatedRoundCount = currentState.roundCount + 1;
   const roundPile: Card[] = [playerCard, computerCard];
+  const updatedRoundCount = state.roundCount + 1;
 
   if (playerCard.value > computerCard.value) {
-    const updatedPlayerDeck = [...playerDraw.remainingDeck, ...roundPile];
-
     return {
-      ...currentState,
-      playerDeck: updatedPlayerDeck,
+      ...state,
+      playerDeck: [...playerDraw.remainingDeck, ...roundPile],
       computerDeck: computerDraw.remainingDeck,
       playerCard,
       computerCard,
-      warPile: [],
       roundCount: updatedRoundCount,
       roundMessage: `Player wins the round with ${playerCard.rank} over ${computerCard.rank}.`,
       gameOver: false,
@@ -188,15 +239,12 @@ export function playRound(currentState: GameState): GameState {
   }
 
   if (computerCard.value > playerCard.value) {
-    const updatedComputerDeck = [...computerDraw.remainingDeck, ...roundPile];
-
     return {
-      ...currentState,
+      ...state,
       playerDeck: playerDraw.remainingDeck,
-      computerDeck: updatedComputerDeck,
+      computerDeck: [...computerDraw.remainingDeck, ...roundPile],
       playerCard,
       computerCard,
-      warPile: [],
       roundCount: updatedRoundCount,
       roundMessage: `Computer wins the round with ${computerCard.rank} over ${playerCard.rank}.`,
       gameOver: false,
@@ -207,12 +255,11 @@ export function playRound(currentState: GameState): GameState {
   const warResult = resolveWar(playerDraw.remainingDeck, computerDraw.remainingDeck, roundPile);
 
   return {
-    ...currentState,
+    ...state,
     playerDeck: warResult.playerDeck,
     computerDeck: warResult.computerDeck,
     playerCard: warResult.playerCard,
     computerCard: warResult.computerCard,
-    warPile: warResult.warPile,
     roundCount: updatedRoundCount,
     roundMessage: warResult.roundMessage,
     gameOver: warResult.gameOver,

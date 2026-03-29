@@ -1,3 +1,4 @@
+import React from "react";
 import type { Card } from "../types/card";
 import CardDisplay from "./CardDisplay";
 import RoundMessage from "./RoundMessage";
@@ -27,7 +28,7 @@ export default function GameBoard({
   winner,
   onFlipCard,
   onNewGame,
-}: GameBoardProps): JSX.Element {
+}: GameBoardProps): React.JSX.Element {
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>War Card Game</h1>

@@ -2,7 +2,7 @@
 //The ability to reset the deck back to 52 cards
 //The ability to draw a card from the deck
 import { useEffect, useReducer } from "react";
-import { type Card } from "../types/card";
+import { type Card, type Suit, type Rank } from "../types/card";
 
 interface Props {
   cards: Card[];
@@ -21,8 +21,13 @@ interface Action {
 
 const generateDeck = (): Card[] => {
   const deck: Card[] = [];
+  const suits = ["hearts", "diamonds", "clubs", "spades"] as const;
+  const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] as const;
+  
   for (let i = 0; i < 52; i++) {
-    const temp: Card = { value: i };
+    const suit = suits[Math.floor(i / 13)] as Suit;
+    const rank = ranks[i % 13] as Rank;
+    const temp: Card = { value: i, suit, rank };
     deck.push(temp);
   }
 

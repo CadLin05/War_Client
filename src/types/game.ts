@@ -5,7 +5,6 @@ export interface GameState {
   computerDeck: Card[];
   playerCard: Card | null;
   computerCard: Card | null;
-  warPile: Card[];
   roundCount: number;
   roundMessage: string;
   gameOver: boolean;
