@@ -1,18 +1,29 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { registerUser } from "../services/authApi";
+
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      setMessage("Passwords do not match.");
       return;
     }
 
-    console.log("Register submitted:", { username, password });
+    try {
+      const response = await registerUser({ username, password });
+      setMessage(response.message || "Registration successful.");
+      setUsername("");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      setMessage("Registration failed.");
+    }
   }
 
   return (
@@ -33,6 +44,7 @@ export default function RegisterPage() {
           placeholder="Username"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
+          required
         />
 
         <input
@@ -40,6 +52,7 @@ export default function RegisterPage() {
           placeholder="Password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
+          required
         />
 
         <input
@@ -47,10 +60,13 @@ export default function RegisterPage() {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
+          required
         />
 
         <button type="submit">Register</button>
       </form>
+
+      {message && <p style={{ marginTop: "1rem" }}>{message}</p>}
     </div>
   );
 }
