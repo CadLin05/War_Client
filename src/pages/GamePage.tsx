@@ -1,10 +1,25 @@
 import { useState } from "react";
 import type { GameState } from "../types/game";
 import { playRound, startNewGame } from "../utils/warLogic";
+import { saveGame } from "../services/gameApi";
+import { useEffect } from "react";
 
 export default function GamePage() {
   const [gameState, setGameState] = useState<GameState>(startNewGame());
 
+  useEffect(() => {
+  if (gameState.gameOver && gameState.winner) {
+    const result = gameState.winner === "Player" ? "Win" : "Loss";
+
+    saveGame({
+      result,
+      rounds: gameState.roundCount,
+      finishedAt: new Date().toISOString(),
+    }).catch(() => {
+      console.log("Failed to save game.");
+    });
+  }
+}, [gameState]);
   function handleFlipCard(): void {
     setGameState((previousState) => playRound(previousState));
   }
