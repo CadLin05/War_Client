@@ -4,7 +4,7 @@ interface GameHistoryTableProps {
   games: GameHistoryItem[];
 }
 
-export default function GameHistoryTable({ games }: GameHistoryTableProps) {
+export default function GameHistoryTable({ games }: GameHistoryTableProps) { //removed time computation, is being done in savegame controller now
   return (
     <div style={{ marginTop: "2rem" }}>
       <h1>Past Games</h1>
@@ -24,7 +24,7 @@ export default function GameHistoryTable({ games }: GameHistoryTableProps) {
               <th style={headerCellStyle}>Game ID</th>
               <th style={headerCellStyle}>Result</th>
               <th style={headerCellStyle}>Rounds</th>
-              <th style={headerCellStyle}>Finished At</th>
+              <th style={headerCellStyle}>Time</th> 
             </tr>
           </thead>
 
@@ -34,9 +34,7 @@ export default function GameHistoryTable({ games }: GameHistoryTableProps) {
                 <td style={bodyCellStyle}>{game.id}</td>
                 <td style={bodyCellStyle}>{game.result}</td>
                 <td style={bodyCellStyle}>{game.rounds}</td>
-                <td style={bodyCellStyle}>
-                  {new Date(game.finishedAt).toLocaleString()}
-                </td>
+                <td style={bodyCellStyle}>{game.time}</td>
               </tr>
             ))}
           </tbody>

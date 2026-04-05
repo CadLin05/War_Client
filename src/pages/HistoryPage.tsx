@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import GameHistoryTable from "../components/GameHistoryTable";
-import { mockHistory } from "../data/mockHistory";
+import { getGameHistory } from "../services/gameApi";
+import type { GameHistoryItem } from "../types/history";
 // later, replace mockHistory with getGameHistory from your API
 
 export default function HistoryPage() {
-  const [games, setGames] = useState(mockHistory);
+  const [games, setGames] = useState<GameHistoryItem[]>([]);
 
   useEffect(() => {
-    setGames(mockHistory);
+    async function fetchHistory(){
+      const history = await getGameHistory();
+      setGames(history); //changed data to history, look at gameApi, getGameHistory function
+    }
+    fetchHistory();
   }, []);
 
   return (
@@ -16,3 +21,4 @@ export default function HistoryPage() {
     </div>
   );
 }
+

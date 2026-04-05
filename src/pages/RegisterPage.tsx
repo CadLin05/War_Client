@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "../services/authApi";
 
+
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +17,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await registerUser({ username, password });
+      const response = await registerUser({ username, password, password2: confirmPassword });
       setMessage(response.message || "Registration successful.");
       setUsername("");
       setPassword("");

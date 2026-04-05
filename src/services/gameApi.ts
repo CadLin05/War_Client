@@ -1,20 +1,16 @@
-interface SaveGameRequest {
-  result: "Win" | "Loss";
-  rounds: number;
-  finishedAt: string;
-}
 
-interface GameHistoryItem {
-  id: number;
-  result: "Win" | "Loss";
+import type { GameHistoryItem } from "../types/history";
+
+interface SaveGameRequest {
+  result: string; //result: "Win" | "Loss";
   rounds: number;
-  finishedAt: string;
+  //time: string; no longer being computed on client side, server handles it in saveGame controller
 }
 
 const BASE_URL = "http://localhost:3000";
 
 export async function saveGame(data: SaveGameRequest): Promise<void> {
-  await fetch(`${BASE_URL}/games`, {
+  await fetch(`${BASE_URL}/game/saveGame`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +21,7 @@ export async function saveGame(data: SaveGameRequest): Promise<void> {
 }
 
 export async function getGameHistory(): Promise<GameHistoryItem[]> {
-  const response = await fetch(`${BASE_URL}/games`, {
+  const response = await fetch(`${BASE_URL}/user/history`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -35,5 +31,6 @@ export async function getGameHistory(): Promise<GameHistoryItem[]> {
     throw new Error("Failed to fetch game history");
   }
 
-  return response.json();
+  const json : {status: string; history: GameHistoryItem[] } = await response.json()
+  return json.history; //just returned the history directly
 }

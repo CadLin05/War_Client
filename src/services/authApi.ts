@@ -3,7 +3,7 @@ import type { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth"
 const BASE_URL = "http://localhost:3000";
 
 export async function registerUser(data: RegisterRequest): Promise<AuthResponse> {
-  const response = await fetch(`${BASE_URL}/register`, {
+  const response = await fetch(`${BASE_URL}/user/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,7 +20,7 @@ export async function registerUser(data: RegisterRequest): Promise<AuthResponse>
 }
 
 export async function loginUser(data: LoginRequest): Promise<AuthResponse> {
-  const response = await fetch(`${BASE_URL}/login`, {
+  const response = await fetch(`${BASE_URL}/user/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

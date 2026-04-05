@@ -13,8 +13,8 @@ export default function GamePage() {
 
     saveGame({
       result,
-      rounds: gameState.roundCount,
-      finishedAt: new Date().toISOString(),
+      rounds: gameState.roundCount
+      //not sending up finished at anymore, time being made serverside finishedAt: new Date().toISOString(), 
     }).catch(() => {
       console.log("Failed to save game.");
     });
