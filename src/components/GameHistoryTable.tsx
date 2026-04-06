@@ -4,11 +4,12 @@ interface GameHistoryTableProps {
   games: GameHistoryItem[];
 }
 
-export default function GameHistoryTable({ games }: GameHistoryTableProps) { //removed time computation, is being done in savegame controller now
+export default function GameHistoryTable({ games }: GameHistoryTableProps) { 
+  //removed time computation, is being done in saveGame controller now
   return (
     <div style={{ marginTop: "2rem" }}>
       <h1>Past Games</h1>
-
+      
       {games.length === 0 ? (
         <p>No past games found.</p>
       ) : (

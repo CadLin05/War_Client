@@ -14,3 +14,8 @@ export interface AuthResponse {
   token?: string;
   userId?: number;
 }
+
+//creating an interface to check if logged in
+export interface AuthState{
+  loggedIn: boolean;
+}
