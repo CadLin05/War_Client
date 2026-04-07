@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { loginUser } from "../services/authApi";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-
+  const navigate = useNavigate();
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     try {
       const response = await loginUser({ username, password });
       if (response.token) {
+        
         localStorage.setItem("token", response.token);
+        navigate("/");
         console.log(localStorage.getItem("token")) // just logging to make sure client is recieving token
       }
       setMessage(response.message || "Login successful.");
@@ -20,6 +23,7 @@ export default function LoginPage() {
       setPassword("");
     } catch (error) {
       setMessage("Login failed.");
+      //setAuth(false);
     }
   }
 

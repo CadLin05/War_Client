@@ -1,13 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+
+/*const authCheck = () =>{
+    const token = localStorage.getItem("token");
+    console.log(token);// trying to figure out how to logout so just here for logging purposes
+    if(token){
+      setAuth(true);
+    }else{
+      setAuth(false);
+    }
+  }*/
 
 export default function Navbar() {
-  const token = localStorage.getItem("token");
-  console.log(token); // trying to figure out how to logout so just here for logging purposes
+  
+  const [auth, setAuth] = useState<boolean>(false);
+  const location = useLocation();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setAuth(!!token); // converts to true/false
+  }, [location]);
 
-  /*function logout(){
-    localStorage.removeItem("token");//removes JWT token, will be used as a conditional for logging in or out.
-    // need to have some kind of functionality to bring the login/register back up after logging out DONT FORGET
-  }*/
+  const logout = () => {
+    localStorage.removeItem("token");
+    setAuth(false); 
+  };
+  
+  
 
   const navStyle = {
     display: "flex",
@@ -27,9 +46,14 @@ export default function Navbar() {
       <Link to="/" style={linkStyle}>Home</Link>
       <Link to="/game" style={linkStyle}>Game</Link>
       <Link to="/history" style={linkStyle}>History</Link>
+      {auth ? <Link to="/login" style={linkStyle} onClick = {logout}>Logout</Link>:
+      <>
       <Link to="/login" style={linkStyle}>Login</Link>
       <Link to="/register" style={linkStyle}>Register</Link>
+      </>
+      }
     </nav>
   );
 }
+
   
