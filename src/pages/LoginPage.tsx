@@ -15,7 +15,7 @@ export default function LoginPage() {
       if (response.token) {
         
         localStorage.setItem("token", response.token);
-        navigate("/");
+        navigate("/"); //directs to homepage so that the navbar can re render
         console.log(localStorage.getItem("token")) // just logging to make sure client is recieving token
       }
       setMessage(response.message || "Login successful.");

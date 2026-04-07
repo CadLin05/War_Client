@@ -18,12 +18,12 @@ export default function Navbar() {
   const location = useLocation();
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setAuth(!!token); // converts to true/false
+    setAuth(!!token); // converts to true or false for logging in or out
   }, [location]);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setAuth(false); 
+    localStorage.removeItem("token"); //removes jwt token, so user is recognized as logged out
+    setAuth(false); //sets authentication to false
   };
   
   
@@ -46,7 +46,7 @@ export default function Navbar() {
       <Link to="/" style={linkStyle}>Home</Link>
       <Link to="/game" style={linkStyle}>Game</Link>
       <Link to="/history" style={linkStyle}>History</Link>
-      {auth ? <Link to="/login" style={linkStyle} onClick = {logout}>Logout</Link>:
+      {auth ? <Link to="/login" style={linkStyle} onClick = {logout}>Logout</Link>: //ternary operator to check if there is authentication, if authenticated: display logout, else: display login and register
       <>
       <Link to="/login" style={linkStyle}>Login</Link>
       <Link to="/register" style={linkStyle}>Register</Link>
