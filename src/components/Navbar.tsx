@@ -13,7 +13,6 @@ import { useEffect } from "react";
   }*/
 
 export default function Navbar() {
-  
   const [auth, setAuth] = useState<boolean>(false);
   const location = useLocation();
   useEffect(() => {
@@ -25,12 +24,13 @@ export default function Navbar() {
     localStorage.removeItem("token"); //removes jwt token, so user is recognized as logged out
     setAuth(false); //sets authentication to false
   };
-  
-  
 
   const navStyle = {
     display: "flex",
     gap: "1rem",
+    justifyContent: "center", // ✅ centers horizontally
+    alignItems: "center", // ✅ aligns vertically (optional)
+    textAlign: "center",
     padding: "1rem 2rem",
     backgroundColor: "#222",
   };
@@ -43,17 +43,29 @@ export default function Navbar() {
 
   return (
     <nav style={navStyle}>
-      <Link to="/" style={linkStyle}>Home</Link>
-      <Link to="/game" style={linkStyle}>Game</Link>
-      <Link to="/history" style={linkStyle}>History</Link>
-      {auth ? <Link to="/login" style={linkStyle} onClick = {logout}>Logout</Link>: //ternary operator to check if there is authentication, if authenticated: display logout, else: display login and register
-      <>
-      <Link to="/login" style={linkStyle}>Login</Link>
-      <Link to="/register" style={linkStyle}>Register</Link>
-      </>
-      }
+      <Link to="/" style={linkStyle}>
+        Home
+      </Link>
+      <Link to="/game" style={linkStyle}>
+        Game
+      </Link>
+      <Link to="/history" style={linkStyle}>
+        History
+      </Link>
+      {auth ? (
+        <Link to="/login" style={linkStyle} onClick={logout}>
+          Logout
+        </Link> //ternary operator to check if there is authentication, if authenticated: display logout, else: display login and register
+      ) : (
+        <>
+          <Link to="/login" style={linkStyle}>
+            Login
+          </Link>
+          <Link to="/register" style={linkStyle}>
+            Register
+          </Link>
+        </>
+      )}
     </nav>
   );
 }
-
-  

@@ -8,18 +8,18 @@ export default function GamePage() {
   const [gameState, setGameState] = useState<GameState>(startNewGame());
 
   useEffect(() => {
-  if (gameState.gameOver && gameState.winner) {
-    const result = gameState.winner === "Player" ? "Win" : "Loss";
+    if (gameState.gameOver && gameState.winner) {
+      const result = gameState.winner === "Player" ? "Win" : "Loss";
 
-    saveGame({
-      result,
-      rounds: gameState.roundCount
-      //not sending up finished at anymore, time being made serverside finishedAt: new Date().toISOString(), 
-    }).catch(() => {
-      console.log("Failed to save game.");
-    });
-  }
-}, [gameState]);
+      saveGame({
+        result,
+        rounds: gameState.roundCount,
+        //not sending up finished at anymore, time being made serverside finishedAt: new Date().toISOString(),
+      }).catch(() => {
+        console.log("Failed to save game.");
+      });
+    }
+  }, [gameState]);
   function handleFlipCard(): void {
     setGameState((previousState) => playRound(previousState));
   }
@@ -32,15 +32,33 @@ export default function GamePage() {
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>War Card Game</h1>
 
-      <p><strong>Rounds Played:</strong> {gameState.roundCount}</p>
-      <p><strong>Player Deck Count:</strong> {gameState.playerDeck.length}</p>
-      <p><strong>Computer Deck Count:</strong> {gameState.computerDeck.length}</p>
+      <p>
+        <strong>Rounds Played:</strong> {gameState.roundCount}
+      </p>
+      <p>
+        <strong>Player Deck Count:</strong> {gameState.playerDeck.length}
+      </p>
+      <p>
+        <strong>Computer Deck Count:</strong> {gameState.computerDeck.length}
+      </p>
 
-      <div style={{ display: "flex", gap: "3rem", marginTop: "1.5rem", marginBottom: "1.5rem" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "3rem",
+          justifyContent: "center", // ✅ centers horizontally
+          alignItems: "center", // ✅ aligns vertically (optional)
+          textAlign: "center",
+          marginTop: "1.5rem",
+          marginBottom: "1.5rem",
+        }}
+      >
         <div>
           <h2>Player Card</h2>
           {gameState.playerCard ? (
-            <p>{gameState.playerCard.rank} of {gameState.playerCard.suit}</p>
+            <p>
+              {gameState.playerCard.rank} of {gameState.playerCard.suit}
+            </p>
           ) : (
             <p>No card flipped yet</p>
           )}
@@ -49,23 +67,34 @@ export default function GamePage() {
         <div>
           <h2>Computer Card</h2>
           {gameState.computerCard ? (
-            <p>{gameState.computerCard.rank} of {gameState.computerCard.suit}</p>
+            <p>
+              {gameState.computerCard.rank} of {gameState.computerCard.suit}
+            </p>
           ) : (
             <p>No card flipped yet</p>
           )}
         </div>
       </div>
 
-      <p><strong>Round Result:</strong> {gameState.roundMessage}</p>
+      <p>
+        <strong>Round Result:</strong> {gameState.roundMessage}
+      </p>
 
-      <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
+      <div
+        style={{
+          marginTop: "1rem",
+          justifyContent: "center", // ✅ centers horizontally
+          alignItems: "center", // ✅ aligns vertically (optional)
+          textAlign: "center",
+          display: "flex",
+          gap: "1rem",
+        }}
+      >
         <button onClick={handleFlipCard} disabled={gameState.gameOver}>
           Flip Card
         </button>
 
-        <button onClick={handleNewGame}>
-          Start New Game
-        </button>
+        <button onClick={handleNewGame}>Start New Game</button>
       </div>
 
       {gameState.gameOver && gameState.winner && (

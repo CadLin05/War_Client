@@ -5,10 +5,20 @@ export default function HomePage() {
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>Welcome to the War Card Game</h1>
       <p>
-        Start a new game, track your past matches, and get ready to battle the computer.
+        Start a new game, track your past matches, and get ready to battle the
+        computer.
       </p>
 
-      <div style={{ marginTop: "1.5rem", display: "flex", gap: "1rem" }}>
+      <div
+        style={{
+          marginTop: "1.5rem",
+          justifyContent: "center", // ✅ centers horizontally
+          alignItems: "center", // ✅ aligns vertically (optional)
+          textAlign: "center",
+          display: "flex",
+          gap: "1rem",
+        }}
+      >
         <Link to="/game">
           <button>Play Game</button>
         </Link>

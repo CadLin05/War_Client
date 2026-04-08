@@ -13,10 +13,9 @@ export default function LoginPage() {
     try {
       const response = await loginUser({ username, password });
       if (response.token) {
-        
         localStorage.setItem("token", response.token);
         navigate("/"); //directs to homepage so that the navbar can re render
-        console.log(localStorage.getItem("token")) // just logging to make sure client is recieving token
+        console.log(localStorage.getItem("token")); // just logging to make sure client is recieving token
       }
       setMessage(response.message || "Login successful.");
       setUsername("");
@@ -28,7 +27,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
+    <div
+      style={{
+        padding: "2rem",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
       <h1>Login</h1>
 
       <form
@@ -37,6 +41,9 @@ export default function LoginPage() {
           display: "flex",
           flexDirection: "column",
           gap: "1rem",
+          margin: "20rem",
+          marginTop: "-2.5rem",
+          padding: "5rem",
           maxWidth: "300px",
         }}
       >
